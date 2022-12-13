@@ -62,15 +62,15 @@ RUN pip3 install numpy==1.19.2 \
                  SharedArray==3.1.0 \
                  torch_scatter
 
-WORKDIR /home/ubuntu
-RUN git clone https://github.com/open-mmlab/OpenPCDet.git
+#WORKDIR /home/ubuntu
+#RUN git clone https://github.com/open-mmlab/OpenPCDet.git
 
 ################ ROS Noetic ################
 RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 RUN apt install -y curl
 RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
 
-RUN apt update
+RUN apt update 
 RUN apt install -y ros-noetic-desktop-full
 
 RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
@@ -79,15 +79,16 @@ RUN apt install -y python3-rosdep python3-rosinstall python3-rosinstall-generato
 
 RUN rosdep init
 RUN rosdep update
-################ entry setting ###############
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
 
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["serve"]
+################ entry setting ###############
+#COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+#RUN chmod +x /usr/local/bin/entrypoint.sh
+
+#ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+#CMD ["serve"]
 
 ################ user setting ################
-ARG  HOST_USER=eric
+ARG  HOST_USER=ubuntu
 ARG  UNAME=${HOST_USER}
 ARG  HOME=/home/${UNAME}
 ARG  MAINPC_IP=localhost

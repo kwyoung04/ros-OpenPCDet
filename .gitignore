@@ -7,3 +7,5 @@ cmake-build-debug
 **/log
 **/*.pth
 
+*.bag
+

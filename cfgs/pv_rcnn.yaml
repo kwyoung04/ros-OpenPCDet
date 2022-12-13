@@ -1,7 +1,7 @@
-CLASS_NAMES: ['Vehicle', 'Pedestrian', 'Cyclist']
+CLASS_NAMES: ['Pedestrian', 'Unknown', 'Car', 'Truck', 'BicycleRider', 'MotorcyleRider', 'Misc']
 
 DATA_CONFIG:
-    _BASE_CONFIG_: /home/ubuntu/src/catkin_ws/src/ros-pvrcnn/config/dataset/waymo/waymo_ped_dataset.yaml
+    _BASE_CONFIG_: cfgs/dataset/my_custom_dataset.yaml
 
 
 MODEL:
@@ -155,7 +155,7 @@ MODEL:
 #                NMS_THRESH: 0.7
                 NMS_PRE_MAXSIZE: 4096
                 NMS_POST_MAXSIZE: 300
-                NMS_THRESH: 0.3
+                NMS_THRESH: 0.85
 
 
         ROI_GRID_POOL:
@@ -193,22 +193,22 @@ MODEL:
 
     POST_PROCESSING:
         RECALL_THRESH_LIST: [0.3, 0.5, 0.7]
-        SCORE_THRESH: 0.3
+        SCORE_THRESH: 0.1
         OUTPUT_RAW_SCORE: False
 
-        EVAL_METRIC: waymo
+        EVAL_METRIC: kitti
 
         NMS_CONFIG:
             MULTI_CLASSES_NMS: False
             NMS_TYPE: nms_gpu
-            NMS_THRESH: 0.3
+            NMS_THRESH: 0.7
             NMS_PRE_MAXSIZE: 4096
             NMS_POST_MAXSIZE: 500
 
 
 OPTIMIZATION:
-    BATCH_SIZE_PER_GPU: 2
-    NUM_EPOCHS: 30
+    BATCH_SIZE_PER_GPU: 12
+    NUM_EPOCHS: 80
 
     OPTIMIZER: adam_onecycle
     LR: 0.01
