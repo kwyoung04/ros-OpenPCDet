@@ -17,8 +17,8 @@ if __name__ == "__main__":
     input_dict = EasyDict()
     input_dict.output_dir = root_path / "output"
     
-    input_dict.ckpt_file = root_path / "config/base/checkpoint_epoch_35.pth"
-    input_dict.cfg_file = root_path / "config/base/voxel_rcnn_with_centerhead_dyn_voxel_base.yaml"
+    input_dict.ckpt_file = root_path / "ckpt/centerpoint.pth"
+    input_dict.cfg_file = root_path / "cfgs/centerpoint.yaml"
 
     input_dict.dummy_cloud = root_path / "config/000000.bin"
     #input_dict.score_threashold = 0.5

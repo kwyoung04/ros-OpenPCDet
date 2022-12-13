@@ -97,48 +97,42 @@ class pvrcnn_ros:
         self.model.eval()
 
         # for ROS
-        #self.sub = rospy.Subscriber("/hesai/pandar", PointCloud2, self.pc2_callback, queue_size=1)
-        self.sub = rospy.Subscriber("/kitti/velo/pointcloud", PointCloud2, self.pc2_callback, queue_size=1)
+        self.sub = rospy.Subscriber("/hesai/pandar", PointCloud2, self.pc2_callback, queue_size=1)
+        #self.sub = rospy.Subscriber("/kitti/velo/pointcloud", PointCloud2, self.pc2_callback, queue_size=1)
         # self.sub = rospy.Subscriber("/points_raw", PointCloud2, self.pc2_callback, queue_size=1)
         self.mk_pub = rospy.Publisher("ros_pvrcnn", MarkerArray, queue_size=1)
         self.frame_id = 0
 
     @exetime
     def detector(self, points):
-        print("### detector")
         with torch.no_grad():
-            print("### 0.0.1")
 
             input_dict = {
                 'points': points,
                 'frame_id': self.frame_id,
             }
-            print("### 0.0.2")
-
             #print(np.insert(input_dict['points'], 0, axis=1))
             #print(np.delete(input_dict['points'], 3, 1))
             input_dict['points'] = np.insert(input_dict['points'], 3, 0, axis=1)
                         
             data_dict = self.demo_dataset.prepare_data(data_dict=input_dict)
-            print("### 0.0.3")
             data_dict = self.demo_dataset.collate_batch([data_dict])
-            print("### 0.0.4")
             load_data_to_gpu(data_dict)
-            print("### 0.0.5")
 
             pred_dicts = self.model.forward(data_dict)[0][0]  # batch_size = 1
             # print(pred_dicts['pred_boxes'].shape)
-            print("### 0.0.6")
             # print("### pred_dicts(tensor): ", pred_dicts)
 
             pred_scores = pred_dicts['pred_scores'].detach().cpu().numpy()
             pred_boxes = pred_dicts['pred_boxes'].detach().cpu().numpy()
+            pred_labels = pred_dicts['pred_labels'].detach().cpu().numpy()
 
             #end_th_point =  len(np.where(pred_scores>=0.1)[0])
             print("### pred_scores: ", pred_scores)
             #print("### th score 0.5: ", end_th_point)
+            
 
-            self.viz(pred_boxes, "velo_link")
+            self.viz(pred_boxes, "PandarQT")
             #self.viz(pred_boxes, "lidar")
             #self.viz(pred_boxes, "base_link")
             #print(pred_dicts, cfg.CLASS_NAMES)
@@ -155,7 +149,6 @@ class pvrcnn_ros:
 
     @exetime
     def pc2_callback(self, msg):
-        print("### pc2_callback")
         points_raw = rnp.point_cloud2.pointcloud2_to_xyz_array(msg)
         points_raw[:, 2] = points_raw[:, 2]
         points_raw = np.hstack((points_raw, np.zeros([len(points_raw), 1])))
